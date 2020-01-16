@@ -1,0 +1,77 @@
+.order-page {
+  flex: 1 1 auto;
+  display: flex;
+  flex-direction: column;
+
+  &__main {
+    flex: 1 1 auto;
+    padding-top: 80px;
+    background-image: url('../assets/img/fake-map.jpg');
+    background-position: center;
+    background-size: cover;
+  }
+
+  &__form {
+    border-radius: 3px;
+    background-color: rgb(255, 255, 255);
+    max-width: 100%;
+    width: 488px;
+    padding: 45px;
+  }
+
+  &__form-footer {
+    margin-top: 30px;
+    width: 100%;
+
+  }
+}
+
+.order-form {
+  display: flex;
+  flex-direction: column;
+
+  &__item {
+    width: 100%;
+    flex: 0 0 auto;
+    display: flex;
+    position: relative;
+    z-index: 1;
+
+    &:last-of-type {
+      &::before {
+        display: none;
+      }
+    }
+
+    &::before {
+      content: '';
+      width: 2px;
+      top: 20px;
+      bottom: -15px;
+      position: absolute;
+      border-left: 2px dashed #c4c4c4;
+      left: 9px;
+      z-index: -1;
+    }
+  }
+
+  &__icon {
+    flex: 0 0 auto;
+    width: 35px;
+
+    img {
+      width: 20px;
+      margin-top: 15px;
+    }
+
+  }
+
+  &__wrap {
+    width: 100%;
+    flex: 1 1 auto;
+  }
+
+  &__input {
+    width: 100%;
+  }
+}

@@ -1,0 +1,52 @@
+.auth-form {
+  border-radius: 3px;
+  background-color: rgb(255, 255, 255);
+  padding: 70px 50px;
+  width: 100%;
+
+  &__title {
+    font-size: 36px;
+    //font-family: "AdobeClean";
+    color: rgb(50, 50, 50);
+    font-weight: bold;
+    text-align: left;
+  }
+
+  &__text {
+    margin-top: 30px;
+    font-size: 16px;
+    //font-family: "AdobeClean";
+    color: rgb(80, 80, 80);
+  }
+
+  &__link {
+    display: inline-block;
+    &,
+    &:focus,
+    &:visited {
+      color: #1473e6;
+      text-decoration: none;
+    }
+
+    &:hover,
+    &:active {
+      color: #1473e6;
+
+      text-decoration: underline;
+    }
+  }
+
+  &__input {
+    width: 100%;
+  }
+  &__real {
+    //margin-top: 45px;
+  }
+  &__row {
+    margin-top: 20px;
+  }
+
+  &__btn {
+    width: 100%;
+  }
+}
