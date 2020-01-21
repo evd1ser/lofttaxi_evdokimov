@@ -1,10 +1,11 @@
-import React, { Component } from "react"
-import AuthForm from "../component/AuthForm"
-import RegistrationForm from "../component/RegistrationForm"
-import { Container, Grid } from "@material-ui/core"
-import { Logo } from "loft-taxi-mui-theme"
+import React, { Component } from 'react'
+import AuthForm from '../component/AuthForm'
+import RegistrationForm from '../component/RegistrationForm'
+import { Container, Grid } from '@material-ui/core'
+import { Logo } from 'loft-taxi-mui-theme'
+import PropTypes from 'prop-types'
 
-require("../styles/AuthPage.scss")
+import '../styles/AuthPage.scss'
 
 class AuthPage extends Component {
   state = {
@@ -18,34 +19,44 @@ class AuthPage extends Component {
   }
 
   renderAuth() {
-    return <AuthForm onChange={() => {
-      this.changeState(false)
-    }}
-                     onChangeRoute={this.props.switchRoute}/>
+    const { switchRoute } = this.props
+
+    return (
+      <AuthForm
+        onChange={() => {
+          this.changeState(false)
+        }}
+        onChangeRoute={switchRoute}
+      />
+    )
   }
 
   renderRegistration() {
-    return <RegistrationForm onChange={() => {
-      this.changeState(true)
-    }}
-                             onChangeRoute={this.props.switchRoute}/>
+    const { switchRoute } = this.props
+
+    return (
+      <RegistrationForm
+        onChange={() => {
+          this.changeState(true)
+        }}
+        onChangeRoute={switchRoute}
+      />
+    )
   }
 
   render() {
+    const { login } = this.state
+    const renderer = login ? this.renderAuth() : this.renderRegistration()
+
     return (
       <div className="a-page">
         <Container>
-          <Grid container
-                spacing={3}
-                alignItems="center"
-          >
-            <Grid item xs={6} style={{textAlign: "center"}}>
-              <Logo
-                white
-              />
+          <Grid container spacing={3} alignItems="center">
+            <Grid item xs={6} style={{ textAlign: 'center' }}>
+              <Logo white />
             </Grid>
             <Grid item xs={5}>
-              {this.state.login ? this.renderAuth() : this.renderRegistration()}
+              {renderer}
             </Grid>
           </Grid>
         </Container>
@@ -54,5 +65,8 @@ class AuthPage extends Component {
   }
 }
 
+AuthPage.propTypes = {
+  switchRoute: PropTypes.func.isRequired,
+}
+
 export { AuthPage }
-export default AuthPage

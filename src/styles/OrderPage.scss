@@ -9,6 +9,8 @@
     background-image: url('../assets/img/fake-map.jpg');
     background-position: center;
     background-size: cover;
+    position: relative;
+    z-index: 1;
   }
 
   &__form {
@@ -17,6 +19,7 @@
     max-width: 100%;
     width: 488px;
     padding: 45px;
+    z-index: 10;
   }
 
   &__form-footer {
@@ -29,13 +32,25 @@
 .order-form {
   display: flex;
   flex-direction: column;
+  background: #fff;
+  //position: relative;
+  //z-index: 100;
 
   &__item {
     width: 100%;
     flex: 0 0 auto;
     display: flex;
     position: relative;
-    z-index: 1;
+    z-index: 10;
+    margin-top: 10px;
+
+    &:first-of-type {
+      margin-top: 0;
+    }
+
+    &_active {
+      z-index: 20;
+    }
 
     &:last-of-type {
       &::before {
@@ -69,9 +84,39 @@
   &__wrap {
     width: 100%;
     flex: 1 1 auto;
+    position: relative;
+    z-index: -1;
   }
 
   &__input {
     width: 100%;
+  }
+
+  &__dropdown {
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #fff;
+    z-index: 2;
+    border: 1px solid #eee;
+    border-top: none;
+  }
+
+  &__drop-item {
+    padding: 8px 16px;
+    font-size: 15px;
+    z-index: 1000;
+    position: relative;
+    border-bottom: 1px solid #eee;
+    cursor: pointer;
+
+    &:last-of-type {
+      border-bottom: none;
+    }
+
+    &:hover {
+      background: #eee;
+    }
   }
 }

@@ -1,5 +1,5 @@
-import React, { Component } from "react"
-import Header from "../elements/Header"
+import React, { Component } from 'react'
+import Header from '../elements/Header'
 import {
   Button,
   Container,
@@ -10,38 +10,50 @@ import {
   Input,
   InputAdornment,
   IconButton,
-} from "@material-ui/core"
-import { Visibility, VisibilityOff, Close as CloseIcon } from "@material-ui/icons"
-import { MCIcon } from "loft-taxi-mui-theme"
+} from '@material-ui/core'
+import { Close as CloseIcon } from '@material-ui/icons'
+import { MCIcon } from 'loft-taxi-mui-theme'
+import { maskJs } from 'mask-js'
 
-require("../styles/ChangeCard.scss")
+import '../styles/ChangeCard.scss'
+import PropTypes from 'prop-types'
 
 class ProfilePage extends Component {
   state = {
     showCVC: false,
-    cardNo: "",
+    cardNo: '',
+    dateExp: '',
+    name: '',
+    cvc: '',
   }
 
   clearCardNo = () => {
     this.setState({
-      cardNo: "",
+      cardNo: '',
     })
   }
-  handleInputChange = (e) => {
-    let name = e.target.name
-    let value = e.target.value
 
+  handleInputChange = ({ target: { name, value } }) => {
     this.setState({
       [name]: value,
     })
   }
 
+  handleInputChangeMask = (mask) => {
+    return ({ target: { name, value } }) => {
+      let newVal = maskJs(mask, value)
+
+      this.handleInputChange({ target: { name, value: newVal } })
+    }
+  }
+
   render() {
-    const {cardNo} = this.state
+    const { cardNo, dateExp, name, cvc } = this.state
+    const { switchRoute } = this.props
 
     return (
       <div className="change-page">
-        <Header switchRoute={this.props.switchRoute}/>
+        <Header switchRoute={switchRoute} />
 
         <div className="change-page__main">
           <Container>
@@ -55,7 +67,7 @@ class ProfilePage extends Component {
                     <Grid item xs={12} md={6}>
                       <div className="card">
                         <div className="card__label">
-                          <MCIcon/>
+                          <MCIcon />
                         </div>
                         <div className="card__wrapper">
                           <FormControl className="card__input">
@@ -64,17 +76,18 @@ class ProfilePage extends Component {
                             </InputLabel>
                             <Input
                               id="standard-adornment-password"
-
                               value={cardNo}
                               name="cardNo"
-                              onChange={this.handleInputChange}
+                              onChange={this.handleInputChangeMask(
+                                '9999 9999 9999 9999'
+                              )}
                               endAdornment={
                                 <InputAdornment position="end">
                                   <IconButton
                                     aria-label="toggle password visibility"
                                     onClick={this.clearCardNo}
                                   >
-                                    <CloseIcon/>
+                                    <CloseIcon />
                                   </IconButton>
                                 </InputAdornment>
                               }
@@ -86,7 +99,8 @@ class ProfilePage extends Component {
                             label="Срок действия:"
                             type="text"
                             name="dateExp"
-                            onChange={this.handleInputChange}
+                            value={dateExp}
+                            onChange={this.handleInputChangeMask('99/99')}
                           />
                         </div>
                       </div>
@@ -99,6 +113,7 @@ class ProfilePage extends Component {
                             label="Имя владельца:"
                             type="text"
                             name="name"
+                            value={name}
                             onChange={this.handleInputChange}
                           />
                         </div>
@@ -108,7 +123,8 @@ class ProfilePage extends Component {
                             label="CVC:"
                             type="password"
                             name="cvc"
-                            onChange={this.handleInputChange}
+                            value={cvc}
+                            onChange={this.handleInputChangeMask('999')}
                           />
                         </div>
                       </div>
@@ -137,5 +153,8 @@ class ProfilePage extends Component {
   }
 }
 
+ProfilePage.propTypes = {
+  switchRoute: PropTypes.func.isRequired,
+}
+
 export { ProfilePage }
-export default ProfilePage

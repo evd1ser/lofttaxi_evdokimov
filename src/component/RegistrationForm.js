@@ -1,53 +1,56 @@
-import React, { Component } from "react"
-import { Button, Grid, TextField } from "@material-ui/core"
+import React, { Component } from 'react'
+import { Button, Grid, TextField } from '@material-ui/core'
+import PropTypes from 'prop-types'
 
 class RegistrationForm extends Component {
   state = {
-    email: "",
-    name: "",
-    surname: "",
-    password: "",
+    email: '',
+    name: '',
+    surname: '',
+    password: '',
   }
 
-  handleSubmit(e) {
+  handleSubmit = (e) => {
     e.preventDefault()
+    this.props.onChangeRoute()
   }
 
-  handleInputChange(e) {
-    let name = e.target.name
-    let value = e.target.value
-
+  handleInputChange = ({ target: { name, value } }) => {
     this.setState({
       [name]: value,
     })
   }
 
-  onLinkClick(e) {
+  onLinkClick = (e) => {
     e.preventDefault()
     this.props.onChange()
   }
 
-
   render() {
+    const { email, name, surname, password } = this.state
+
     return (
       <div className="auth-form">
         <h1 className="auth-form__title">Регистрация</h1>
-        <p className="auth-form__text">Уже зарегистрирован? <a href="#auth" className="auth-form__link" onClick={(e) => this.onLinkClick(e)}>Войти</a>
+        <p className="auth-form__text">
+          Уже зарегистрирован?{' '}
+          <a
+            href="#auth"
+            className="auth-form__link"
+            onClick={this.onLinkClick}
+          >
+            Войти
+          </a>
         </p>
-        <form className="auth-form__real"
-              onSubmit={(e) => {
-                this.handleSubmit(e)
-              }}>
+        <form className="auth-form__real" onSubmit={this.handleSubmit}>
           <div className="auth-form__row">
             <TextField
               className="auth-form__input"
               label="Адрес электронной почты"
               name="email"
               type="text"
-              value={this.state.email}
-              onChange={(e) => {
-                this.handleInputChange(e)
-              }}
+              value={email}
+              onChange={this.handleInputChange}
             />
           </div>
           <div className="auth-form__row">
@@ -58,10 +61,8 @@ class RegistrationForm extends Component {
                   label="Имя"
                   name="name"
                   type="text"
-                  value={this.state.name}
-                  onChange={(e) => {
-                    this.handleInputChange(e)
-                  }}
+                  value={name}
+                  onChange={this.handleInputChange}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -70,10 +71,8 @@ class RegistrationForm extends Component {
                   label="Фамилия"
                   name="surname"
                   type="text"
-                  value={this.state.surname}
-                  onChange={(e) => {
-                    this.handleInputChange(e)
-                  }}
+                  value={surname}
+                  onChange={this.handleInputChange}
                 />
               </Grid>
             </Grid>
@@ -84,17 +83,18 @@ class RegistrationForm extends Component {
               label="Пароль"
               name="password"
               type="password"
-              value={this.state.password}
-              onChange={(e) => {
-                this.handleInputChange(e)
-              }}
+              value={password}
+              onChange={this.handleInputChange}
             />
           </div>
           <div className="auth-form__row">
-            <Grid container
-                  justify="flex-end">
+            <Grid container justify="flex-end">
               <Grid item xs={5}>
-                <Button className="auth-form__btn" variant="contained" color="primary">
+                <Button
+                  className="auth-form__btn"
+                  variant="contained"
+                  color="primary"
+                >
                   Зарегистрироваться
                 </Button>
               </Grid>
@@ -102,8 +102,18 @@ class RegistrationForm extends Component {
           </div>
         </form>
       </div>
-  )
+    )
   }
-  }
+}
 
-  export default RegistrationForm
+RegistrationForm.propTypes = {
+  onChange: PropTypes.func,
+  onChangeRoute: PropTypes.func,
+}
+
+RegistrationForm.defaultProps = {
+  onChange: () => {},
+  onChangeRoute: () => {},
+}
+
+export default RegistrationForm

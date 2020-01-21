@@ -1,43 +1,49 @@
-import React, { Component } from "react"
-import { Button, Grid, TextField } from "@material-ui/core"
+import React, { Component } from 'react'
+import { Button, Grid, TextField } from '@material-ui/core'
+import { AuthContext } from '../context/AuthContext'
 
-require("../styles/AuthForm.scss")
+import '../styles/AuthForm.scss'
 
 class AuthForm extends Component {
   state = {
-    username: "",
-    password: "",
+    username: '',
+    password: '',
   }
 
-  handleSubmit(e) {
+  handleSubmit = (e) => {
     e.preventDefault()
-    this.props.onChangeRoute('order')
+    const { login } = this.context
+    const { username, password } = this.state
+    let isCorrect = login(username, password)
+
+    if (isCorrect) {
+      this.props.onChangeRoute('order')
+    }
   }
 
-  handleInputChange(e) {
-    let name = e.target.name
-    let value = e.target.value
-
+  handleInputChange = ({ target: { name, value } }) =>
     this.setState({
       [name]: value,
     })
-  }
 
-  onLinkClick(e) {
+  onLinkClick = (e) => {
     e.preventDefault()
     this.props.onChange()
   }
 
   render() {
+    const { username, password } = this.state
+
     return (
       <div className="auth-form">
         <h1 className="auth-form__title">Войти</h1>
-        <p className="auth-form__text">Новый пользователь? <a href="#reg" className="auth-form__link"
-                                                              onClick={(e) => this.onLinkClick(e)}>Зарегистрируйтесь</a>
+        <p className="auth-form__text">
+          Новый пользователь?{' '}
+          <a href="#reg" className="auth-form__link" onClick={this.onLinkClick}>
+            Зарегистрируйтесь
+          </a>
         </p>
-        <form className="auth-form__real" onSubmit={(e) => {
-          this.handleSubmit(e)
-        }}>
+        <form className="auth-form__real" onSubmit={this.handleSubmit}>
           <div className="auth-form__row">
             <TextField
               className="auth-form__input"
@@ -45,10 +51,8 @@ class AuthForm extends Component {
               label="Имя пользователя*"
               type="text"
               name="username"
-              value={this.state.username}
-              onChange={(e) => {
-                this.handleInputChange(e)
-              }}
+              value={username}
+              onChange={this.handleInputChange}
             />
           </div>
           <div className="auth-form__row">
@@ -58,18 +62,20 @@ class AuthForm extends Component {
               label="Пароль*"
               type="password"
               name="password"
-              value={this.state.password}
-              onChange={(e) => {
-                this.handleInputChange(e)
-              }}
+              value={password}
+              onChange={this.handleInputChange}
             />
           </div>
 
           <div className="auth-form__row">
-            <Grid container
-                  justify="flex-end">
+            <Grid container justify="flex-end">
               <Grid item xs={5}>
-                <Button type="submit" className="auth-form__btn" variant="contained" color="primary">
+                <Button
+                  type="submit"
+                  className="auth-form__btn"
+                  variant="contained"
+                  color="primary"
+                >
                   Войти
                 </Button>
               </Grid>
@@ -80,5 +86,7 @@ class AuthForm extends Component {
     )
   }
 }
+
+AuthForm.contextType = AuthContext
 
 export default AuthForm
