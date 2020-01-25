@@ -16,7 +16,6 @@ import { MCIcon } from 'loft-taxi-mui-theme'
 import { maskJs } from 'mask-js'
 
 import '../styles/ChangeCard.scss'
-import PropTypes from 'prop-types'
 
 class ProfilePage extends Component {
   state = {
@@ -49,11 +48,10 @@ class ProfilePage extends Component {
 
   render() {
     const { cardNo, dateExp, name, cvc } = this.state
-    const { switchRoute } = this.props
 
     return (
       <div className="change-page">
-        <Header switchRoute={switchRoute} />
+        <Header />
 
         <div className="change-page__main">
           <Container>
@@ -151,10 +149,6 @@ class ProfilePage extends Component {
       </div>
     )
   }
-}
-
-ProfilePage.propTypes = {
-  switchRoute: PropTypes.func.isRequired,
 }
 
 export { ProfilePage }

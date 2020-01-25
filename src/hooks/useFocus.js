@@ -24,7 +24,7 @@ function useFocus(eventName, handler, element = window) {
         .addEventListener('focus', focus)
       savedHandler.current
         .querySelector('input')
-        .addEventListener('blur', focus)
+        .addEventListener('blur', unFocus)
 
       return () => {
         savedHandler.current
@@ -32,7 +32,7 @@ function useFocus(eventName, handler, element = window) {
           .removeEventListener('focus', focus)
         savedHandler.current
           .querySelector('input')
-          .removeEventListener('blur', focus)
+          .removeEventListener('blur', unFocus)
       }
     },
     [savedHandler] // Re-run if eventName or element changes

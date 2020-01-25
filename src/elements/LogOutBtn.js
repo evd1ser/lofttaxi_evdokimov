@@ -3,14 +3,13 @@ import { Button } from '@material-ui/core'
 import { AuthContext } from '../context/AuthContext'
 import PropTypes from 'prop-types'
 
-const LogOutBtn = ({ onClick }) => {
+const LogOutBtn = () => {
   const context = React.useContext(AuthContext)
 
   return (
     <Button
-      onClick={(e) => {
+      onClick={() => {
         context.logout()
-        onClick(e)
       }}
     >
       Выйти

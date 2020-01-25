@@ -1,32 +1,28 @@
 import React from 'react'
-import Cookies from 'js-cookie'
-import { AuthContext } from '../context/AuthContext'
+import { Route, BrowserRouter, Redirect, Switch } from 'react-router-dom'
 import { AuthPage, OrderPage, ProfilePage } from '../pages'
-
 const Router = () => {
-  let defRoute = Cookies.get('route') || 'auth'
-  const context = React.useContext(AuthContext)
-  const [route, setRoute] = React.useState(defRoute)
+  let redirectAuth = null
+  let redirectOrder = null
 
-  const switchRoute = (routeName) => {
-    Cookies.set('route', routeName)
-    setRoute(routeName)
+  if (true) {
+    redirectAuth = <Redirect to="/auth" />
+  } else {
+    redirectOrder = <Redirect to="/order" />
   }
 
-  let ChComponent = <AuthPage switchRoute={switchRoute} />
-
-  if (context.isLoggedIn) {
-    switch (route) {
-      case 'profile':
-        ChComponent = <ProfilePage switchRoute={switchRoute} />
-        break
-      case 'order':
-      default:
-        ChComponent = <OrderPage switchRoute={switchRoute} />
-    }
-  }
-
-  return ChComponent
+  return (
+    <BrowserRouter>
+      <Switch>
+        <Route path="/order" component={OrderPage} />
+        <Route path="/profile" component={ProfilePage} />
+        {redirectOrder}
+        <Route path="/auth" component={AuthPage} />
+        {redirectAuth}
+        <Route exact path="/" component={AuthPage} />
+      </Switch>
+    </BrowserRouter>
+  )
 }
 
 export default Router

@@ -1,12 +1,7 @@
 import React from 'react'
 import { TextField } from '@material-ui/core'
-import { mapboxapikey } from '../settings'
-import mapboxSdk from '@mapbox/mapbox-sdk/umd/mapbox-sdk'
 import useFocus from '../hooks/useFocus'
-
-const mapbox = mapboxSdk({
-  accessToken: mapboxapikey,
-})
+import { getAvailableFeaturesBy } from '../helpers/mapHelpers'
 
 const MapBoxInput = ({
   label = 'Откуда',
@@ -18,25 +13,11 @@ const MapBoxInput = ({
   const [features, setFeatures] = React.useState([])
   const [focusRef, isFocus] = useFocus()
 
-  const findAvailablePlate = (query) => {
-    if (!query.length) {
-      return
-    }
-
-    mapbox.geocoding
-      .forwardGeocode({
-        query,
-        limit: 2,
-      })
-      .send()
-      .then((response) => {
-        const match = response.body
-        setFeatures(match.features)
-      })
-  }
-
   const onChangeInputHandler = ({ target: { value } }) => {
-    findAvailablePlate(value)
+    getAvailableFeaturesBy(value).then((features) => {
+      setFeatures(features)
+    })
+
     setValue(value)
   }
 

@@ -1,6 +1,7 @@
 import React, { Component } from 'react'
 import { Button, Grid, TextField } from '@material-ui/core'
 import PropTypes from 'prop-types'
+import { Link } from 'react-router-dom'
 
 class RegistrationForm extends Component {
   state = {
@@ -21,11 +22,6 @@ class RegistrationForm extends Component {
     })
   }
 
-  onLinkClick = (e) => {
-    e.preventDefault()
-    this.props.onChange()
-  }
-
   render() {
     const { email, name, surname, password } = this.state
 
@@ -34,13 +30,9 @@ class RegistrationForm extends Component {
         <h1 className="auth-form__title">Регистрация</h1>
         <p className="auth-form__text">
           Уже зарегистрирован?{' '}
-          <a
-            href="#auth"
-            className="auth-form__link"
-            onClick={this.onLinkClick}
-          >
+          <Link to={`/auth`} className="auth-form__link">
             Войти
-          </a>
+          </Link>
         </p>
         <form className="auth-form__real" onSubmit={this.handleSubmit}>
           <div className="auth-form__row">
@@ -91,6 +83,7 @@ class RegistrationForm extends Component {
             <Grid container justify="flex-end">
               <Grid item xs={5}>
                 <Button
+                  type={'submit'}
                   className="auth-form__btn"
                   variant="contained"
                   color="primary"

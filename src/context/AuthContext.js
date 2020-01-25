@@ -1,9 +1,10 @@
 import React, { Component } from 'react'
 import Cookies from 'js-cookie'
-import PropTypes from 'prop-types'
+import { login } from '../store/Auth/ActionAuth'
+import { connect } from 'react-redux'
 
 const AuthContext = React.createContext()
-const { Provider, Consumer } = AuthContext
+const { Provider: AuthProvider, Consumer } = AuthContext
 
 // Примечание: ещё вы можете использовать хуки, чтобы определять состояние
 // и преобразовывать его в функциональный компонент
@@ -12,19 +13,10 @@ class AuthContextProvider extends Component {
     isLoggedIn: Cookies.get('auth') || false,
   }
   login = (email, password) => {
-    if (email === 'test@admin.com' && password === 'password') {
-      Cookies.set('auth', true)
-
-      this.setState({
-        isLoggedIn: true,
-      })
-      return true
-    }
-
-    return false
+    const { login } = this.props
+    login(email, password)
   }
   logout = () => {
-    Cookies.remove('auth')
     this.setState({
       isLoggedIn: false,
     })
@@ -32,7 +24,7 @@ class AuthContextProvider extends Component {
 
   render() {
     return (
-      <Provider
+      <AuthProvider
         value={{
           isLoggedIn: this.state.isLoggedIn,
           login: this.login,
@@ -40,13 +32,9 @@ class AuthContextProvider extends Component {
         }}
       >
         {this.props.children}
-      </Provider>
+      </AuthProvider>
     )
   }
-}
-
-AuthContextProvider.propTypes = {
-  children: PropTypes.node.isRequired,
 }
 
 export { AuthContextProvider, Consumer as AuthContextConsumer, AuthContext }

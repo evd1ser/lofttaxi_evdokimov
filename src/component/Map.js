@@ -1,9 +1,15 @@
 import React from 'react'
 import mapboxgl, { LngLat, polyline } from 'mapbox-gl'
 import MapboxLanguage from '@mapbox/mapbox-gl-language'
-import { getLocation } from '../helper'
 import { mapboxapikey } from '../settings'
 import mapboxSdk from '@mapbox/mapbox-sdk/umd/mapbox-sdk'
+import {
+  getLocation,
+  getAvailableFeaturesBy,
+  generateMapElement,
+  getDirectionGeometry,
+  getWaypointsFromMarker,
+} from '../helpers/mapHelpers'
 
 const mapbox = mapboxSdk({
   accessToken: mapboxapikey,
@@ -30,7 +36,6 @@ class MapEl extends React.Component {
 
     getLocation(({ coords: { longitude, latitude } }) => {
       this.map.setCenter([longitude, latitude])
-      // this.initDraggableMarker([longitude, latitude])
     })
   }
 
@@ -43,7 +48,7 @@ class MapEl extends React.Component {
   }
 
   addLayer = () => {
-    /*    map.flyTo({
+    /*map.flyTo({
       center: coordinates[0],
       zoom: 15,
     })*/
@@ -98,45 +103,10 @@ class MapEl extends React.Component {
     this.generateDirections()
   }
 
-  generateMapElement = (name) => {
-    const markersOpt = {
-      address_from: {
-        url: require('../assets/img/point_from.png'),
-        size: {
-          width: 44,
-          height: 44,
-        },
-      },
-      name_middle: {
-        url: '',
-        size: {
-          width: 0,
-          height: 0,
-        },
-      },
-      address_to: {
-        url: require('../assets/img/point_to.png'),
-        size: {
-          width: 24,
-          height: 24,
-        },
-      },
-    }
-    const currentMarker = markersOpt[name]
-
-    let el = document.createElement('div')
-    el.className = `marker ${name}`
-    el.style.backgroundImage = `url('${currentMarker.url}')`
-    el.style.width = `${currentMarker.size.width}px`
-    el.style.height = `${currentMarker.size.height}px`
-
-    return el
-  }
-
   initDraggableMarker = (coordinate, name) => {
     const { updateFutures } = this.props
 
-    const element = this.generateMapElement(name)
+    const element = generateMapElement(name)
 
     const marker = new mapboxgl.Marker({
       draggable: true,
@@ -150,61 +120,29 @@ class MapEl extends React.Component {
     const onDragEnd = () => {
       let lngLat = marker.getLngLat()
 
-      this.getResultOfPoint(`${lngLat.lng},${lngLat.lat}`).then((data) => {
-        updateFutures(data, name)
+      getAvailableFeaturesBy(`${lngLat.lng},${lngLat.lat}`).then((features) => {
+        if (features.length) {
+          updateFutures(features[0], name)
+        }
       })
     }
 
-    // marker.getElement().addEventListener('click', function(e) {
-    // })
     marker.on('dragend', onDragEnd)
   }
 
   generateDirections = () => {
     if (markers.length < 2) return
 
-    let waypoints = []
+    let waypoints = getWaypointsFromMarker(markers)
 
-    for (let marker of markers) {
-      let lngLat = marker.getLngLat()
+    getDirectionGeometry(waypoints).then((geometry) => {
+      const routeSource = this.map.getSource('route')
 
-      waypoints.push({
-        coordinates: [lngLat.lng, lngLat.lat],
+      routeSource.setData({
+        type: 'Feature',
+        geometry,
       })
-    }
-    mapbox.directions
-      .getDirections({
-        language: 'ru',
-        geometries: 'geojson',
-        waypoints,
-      })
-      .send()
-      .then(({ body: directions }) => {
-        const route = directions.routes[0]
-        const routeSource = this.map.getSource('route')
-
-        routeSource.setData({
-          type: 'Feature',
-          geometry: route.geometry,
-        })
-      })
-  }
-
-  getResultOfPoint = (query) => {
-    return mapbox.geocoding
-      .forwardGeocode({
-        query,
-      })
-      .send()
-      .then((response) => {
-        const match = response.body
-
-        if (match.features.length) {
-          return match.features[0]
-        }
-
-        return 0
-      })
+    })
   }
 
   componentWillUnmount() {

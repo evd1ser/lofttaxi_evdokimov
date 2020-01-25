@@ -1,8 +1,10 @@
 import React, { Component } from 'react'
 import { Button, Grid, TextField } from '@material-ui/core'
-import { AuthContext } from '../context/AuthContext'
+import { Link } from 'react-router-dom'
 
 import '../styles/AuthForm.scss'
+import { login } from '../store/Auth/ActionAuth'
+import { connect } from 'react-redux'
 
 class AuthForm extends Component {
   state = {
@@ -12,13 +14,9 @@ class AuthForm extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault()
-    const { login } = this.context
     const { username, password } = this.state
-    let isCorrect = login(username, password)
 
-    if (isCorrect) {
-      this.props.onChangeRoute('order')
-    }
+    this.props.login(username, password)
   }
 
   handleInputChange = ({ target: { name, value } }) =>
@@ -26,12 +24,8 @@ class AuthForm extends Component {
       [name]: value,
     })
 
-  onLinkClick = (e) => {
-    e.preventDefault()
-    this.props.onChange()
-  }
-
   render() {
+    const { match } = this.props
     const { username, password } = this.state
 
     return (
@@ -39,9 +33,9 @@ class AuthForm extends Component {
         <h1 className="auth-form__title">Войти</h1>
         <p className="auth-form__text">
           Новый пользователь?{' '}
-          <a href="#reg" className="auth-form__link" onClick={this.onLinkClick}>
+          <Link to={`${match.url}/registration`} className="auth-form__link">
             Зарегистрируйтесь
-          </a>
+          </Link>
         </p>
         <form className="auth-form__real" onSubmit={this.handleSubmit}>
           <div className="auth-form__row">
@@ -87,6 +81,13 @@ class AuthForm extends Component {
   }
 }
 
-AuthForm.contextType = AuthContext
+const mapStateToProps = () => {}
+const mapDispatchToProps = (dispatch) => {
+  return {
+    login: (email, password) => {
+      dispatch(login(email, password))
+    },
+  }
+}
 
-export default AuthForm
+export default connect(mapStateToProps, mapDispatchToProps)(AuthForm)

@@ -5,14 +5,12 @@ import OrderForm from '../component/OrderForm'
 import Map from '../component/Map'
 
 import '../styles/OrderPage.scss'
-import PropTypes from 'prop-types'
-
-const OrderPage = ({ switchRoute }) => {
+const OrderPage = () => {
   const [futures, setFutures] = React.useState({})
 
   return (
     <div className="order-page">
-      <Header switchRoute={switchRoute} />
+      <Header />
 
       <div className="order-page__main">
         <Container
@@ -46,10 +44,6 @@ const OrderPage = ({ switchRoute }) => {
       </div>
     </div>
   )
-}
-
-OrderPage.propTypes = {
-  switchRoute: PropTypes.func.isRequired,
 }
 
 export { OrderPage }

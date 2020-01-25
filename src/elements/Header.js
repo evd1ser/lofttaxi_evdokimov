@@ -3,10 +3,10 @@ import { Logo } from 'loft-taxi-mui-theme'
 import { Button, Grid, Container } from '@material-ui/core'
 import LogOutBtn from './LogOutBtn'
 import PropTypes from 'prop-types'
-
+import { Link } from 'react-router-dom'
 import '../styles/Header.scss'
 
-const Header = ({ switchRoute }) => {
+const Header = () => {
   return (
     <header className="header">
       <Container>
@@ -15,25 +15,13 @@ const Header = ({ switchRoute }) => {
             <Logo />
           </Grid>
           <Grid>
-            <Button
-              onClick={() => {
-                switchRoute('order')
-              }}
-            >
+            <Button component={Link} to={'/order'}>
               Карта
             </Button>
-            <Button
-              onClick={() => {
-                switchRoute('profile')
-              }}
-            >
+            <Button component={Link} to={'/profile'}>
               Профиль
             </Button>
-            <LogOutBtn
-              onClick={() => {
-                switchRoute('auth')
-              }}
-            />
+            <LogOutBtn />
           </Grid>
         </Grid>
       </Container>
