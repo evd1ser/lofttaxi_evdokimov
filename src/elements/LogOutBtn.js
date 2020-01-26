@@ -1,28 +1,12 @@
 import React from 'react'
 import { Button } from '@material-ui/core'
-import { AuthContext } from '../context/AuthContext'
-import PropTypes from 'prop-types'
+import { connect } from 'react-redux'
+import { logout } from '../store/Auth/ActionAuth'
 
-const LogOutBtn = () => {
-  const context = React.useContext(AuthContext)
-
-  return (
-    <Button
-      onClick={() => {
-        context.logout()
-      }}
-    >
-      Выйти
-    </Button>
-  )
+const LogOutBtn = ({ logOut }) => {
+  return <Button onClick={logOut}>Выйти</Button>
 }
-
-LogOutBtn.propTypes = {
-  onClick: PropTypes.func,
-}
-
-LogOutBtn.defaultProps = {
-  onClick: () => {},
-}
-
-export default LogOutBtn
+const mapDispatchToProps = (dispatch) => ({
+  logOut: () => dispatch(logout()),
+})
+export default connect(null, mapDispatchToProps)(LogOutBtn)

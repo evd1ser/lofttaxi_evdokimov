@@ -1,9 +1,9 @@
 import React, { Component } from 'react'
-import { Button, Grid, TextField } from '@material-ui/core'
+import { Button, Grid, LinearProgress, TextField } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 
 import '../styles/AuthForm.scss'
-import { login } from '../store/Auth/ActionAuth'
+import { loginRequest } from '../store/Auth/ActionAuth'
 import { connect } from 'react-redux'
 
 class AuthForm extends Component {
@@ -24,16 +24,27 @@ class AuthForm extends Component {
       [name]: value,
     })
 
+  renderErrorMessage = (message) => {
+    return <div>{message}</div>
+  }
+
   render() {
-    const { match } = this.props
+    const { match, errorMessage, isLoading } = this.props
     const { username, password } = this.state
+
+    const renderer = errorMessage ? this.renderErrorMessage(errorMessage) : null
+    const rendererProgress = isLoading ? (
+      <div className="auth-form__progress">
+        <LinearProgress />
+      </div>
+    ) : null
 
     return (
       <div className="auth-form">
         <h1 className="auth-form__title">Войти</h1>
         <p className="auth-form__text">
           Новый пользователь?{' '}
-          <Link to={`${match.url}/registration`} className="auth-form__link">
+          <Link to={`/auth/registration`} className="auth-form__link">
             Зарегистрируйтесь
           </Link>
         </p>
@@ -65,6 +76,7 @@ class AuthForm extends Component {
             <Grid container justify="flex-end">
               <Grid item xs={5}>
                 <Button
+                  disabled={isLoading}
                   type="submit"
                   className="auth-form__btn"
                   variant="contained"
@@ -75,17 +87,22 @@ class AuthForm extends Component {
               </Grid>
             </Grid>
           </div>
+          {renderer}
+          {rendererProgress}
         </form>
       </div>
     )
   }
 }
 
-const mapStateToProps = () => {}
+const mapStateToProps = (store) => ({
+  errorMessage: store.auth.error,
+  isLoading: store.auth.isLoading,
+})
 const mapDispatchToProps = (dispatch) => {
   return {
     login: (email, password) => {
-      dispatch(login(email, password))
+      dispatch(loginRequest(email, password))
     },
   }
 }

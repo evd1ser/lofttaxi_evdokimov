@@ -1,7 +1,8 @@
 import React, { Component } from 'react'
-import { Button, Grid, TextField } from '@material-ui/core'
-import PropTypes from 'prop-types'
+import { Button, Grid, TextField, LinearProgress } from '@material-ui/core'
 import { Link } from 'react-router-dom'
+import { registrationRequest } from '../store/Registration/ActionRegistration'
+import { connect } from 'react-redux'
 
 class RegistrationForm extends Component {
   state = {
@@ -13,7 +14,11 @@ class RegistrationForm extends Component {
 
   handleSubmit = (e) => {
     e.preventDefault()
-    this.props.onChangeRoute()
+    const { isLoading } = this.props
+
+    if (!isLoading) {
+      this.props.registration(this.state)
+    }
   }
 
   handleInputChange = ({ target: { name, value } }) => {
@@ -22,8 +27,20 @@ class RegistrationForm extends Component {
     })
   }
 
+  renderErrorMessage(errorMessage) {
+    return <div>{errorMessage}</div>
+  }
+
   render() {
+    const { errorMessage, isLoading } = this.props
     const { email, name, surname, password } = this.state
+
+    const renderer = errorMessage ? this.renderErrorMessage(errorMessage) : null
+    const rendererProgress = isLoading ? (
+      <div className="auth-form__progress">
+        <LinearProgress />
+      </div>
+    ) : null
 
     return (
       <div className="auth-form">
@@ -83,6 +100,7 @@ class RegistrationForm extends Component {
             <Grid container justify="flex-end">
               <Grid item xs={5}>
                 <Button
+                  disabled={isLoading}
                   type={'submit'}
                   className="auth-form__btn"
                   variant="contained"
@@ -93,20 +111,25 @@ class RegistrationForm extends Component {
               </Grid>
             </Grid>
           </div>
+          {renderer}
+          {rendererProgress}
         </form>
       </div>
     )
   }
 }
 
-RegistrationForm.propTypes = {
-  onChange: PropTypes.func,
-  onChangeRoute: PropTypes.func,
+const mapStateToProps = (store) => ({
+  errorMessage: store.registration.error,
+  isLoading: store.registration.isLoading,
+})
+
+const mapDispatchToProps = (dispatch) => {
+  return {
+    registration: (userObj) => {
+      dispatch(registrationRequest(userObj))
+    },
+  }
 }
 
-RegistrationForm.defaultProps = {
-  onChange: () => {},
-  onChangeRoute: () => {},
-}
-
-export default RegistrationForm
+export default connect(mapStateToProps, mapDispatchToProps)(RegistrationForm)

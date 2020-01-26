@@ -1,28 +1,40 @@
 import React from 'react'
 import { Route, BrowserRouter, Redirect, Switch } from 'react-router-dom'
 import { AuthPage, OrderPage, ProfilePage } from '../pages'
-const Router = () => {
-  let redirectAuth = null
-  let redirectOrder = null
+import { connect } from 'react-redux'
 
-  if (true) {
-    redirectAuth = <Redirect to="/auth" />
-  } else {
-    redirectOrder = <Redirect to="/order" />
-  }
+import PrivateRoute from './PrivateRoute'
 
+const Router = ({ isLogged }) => {
   return (
     <BrowserRouter>
       <Switch>
-        <Route path="/order" component={OrderPage} />
-        <Route path="/profile" component={ProfilePage} />
-        {redirectOrder}
-        <Route path="/auth" component={AuthPage} />
-        {redirectAuth}
-        <Route exact path="/" component={AuthPage} />
+        <PrivateRoute
+          path="/auth"
+          to="/order"
+          isCorrect={!isLogged}
+          component={AuthPage}
+        />
+        <PrivateRoute
+          path="/order"
+          isCorrect={isLogged}
+          component={OrderPage}
+        />
+        <PrivateRoute
+          path="/profile"
+          isCorrect={isLogged}
+          component={ProfilePage}
+        />
+        <Route path="/" component={isLogged ? OrderPage : AuthPage} />
       </Switch>
     </BrowserRouter>
   )
 }
 
-export default Router
+const mapStateToProps = ({ auth: { isLogged } }) => {
+  return {
+    isLogged,
+  }
+}
+
+export default connect(mapStateToProps)(Router)

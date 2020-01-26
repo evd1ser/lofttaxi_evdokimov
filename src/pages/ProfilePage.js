@@ -10,25 +10,34 @@ import {
   Input,
   InputAdornment,
   IconButton,
+  LinearProgress,
 } from '@material-ui/core'
 import { Close as CloseIcon } from '@material-ui/icons'
 import { MCIcon } from 'loft-taxi-mui-theme'
 import { maskJs } from 'mask-js'
-
+import { connect } from 'react-redux'
+import { updateCardRequest } from '../store/CreditCard/ActionCreditCard'
 import '../styles/ChangeCard.scss'
 
-class ProfilePage extends Component {
+class ProfilePageComponent extends Component {
   state = {
     showCVC: false,
-    cardNo: '',
-    dateExp: '',
-    name: '',
+    cardNumber: '',
+    expiryDate: '',
+    cardName: '',
     cvc: '',
+  }
+  componentDidMount() {
+    const { card } = this.props
+
+    this.setState({
+      ...card,
+    })
   }
 
   clearCardNo = () => {
     this.setState({
-      cardNo: '',
+      cardNumber: '',
     })
   }
 
@@ -46,8 +55,34 @@ class ProfilePage extends Component {
     }
   }
 
+  updateCardData = () => {
+    const { showCVC, ...cardData } = this.state
+
+    this.props.updateCard(cardData)
+  }
+
+  renderErrorMessage = (message) => {
+    return <div>{message}</div>
+  }
+
+  renderLoadIndication = () => {
+    return (
+      <div className="change-page__progress">
+        <LinearProgress />
+      </div>
+    )
+  }
+
   render() {
-    const { cardNo, dateExp, name, cvc } = this.state
+    const { isLoading, errorMessage } = this.props
+    const { cardNumber, expiryDate, cardName, cvc } = this.state
+
+    const renderer = errorMessage ? this.renderErrorMessage(errorMessage) : null
+    const rendererProgress = isLoading ? (
+      <div className="auth-form__progress">
+        <LinearProgress />
+      </div>
+    ) : null
 
     return (
       <div className="change-page">
@@ -74,8 +109,8 @@ class ProfilePage extends Component {
                             </InputLabel>
                             <Input
                               id="standard-adornment-password"
-                              value={cardNo}
-                              name="cardNo"
+                              value={cardNumber}
+                              name="cardNumber"
                               onChange={this.handleInputChangeMask(
                                 '9999 9999 9999 9999'
                               )}
@@ -96,8 +131,8 @@ class ProfilePage extends Component {
                           <TextField
                             label="Срок действия:"
                             type="text"
-                            name="dateExp"
-                            value={dateExp}
+                            name="expiryDate"
+                            value={expiryDate}
                             onChange={this.handleInputChangeMask('99/99')}
                           />
                         </div>
@@ -110,8 +145,8 @@ class ProfilePage extends Component {
                             className="card__input"
                             label="Имя владельца:"
                             type="text"
-                            name="name"
-                            value={name}
+                            name="cardName"
+                            value={cardName}
                             onChange={this.handleInputChange}
                           />
                         </div>
@@ -137,11 +172,17 @@ class ProfilePage extends Component {
                       marginTop: 40,
                     }}
                   >
-                    <Button variant="contained" color="primary">
+                    <Button
+                      variant="contained"
+                      color="primary"
+                      onClick={this.updateCardData}
+                    >
                       Сохранить
                     </Button>
                   </Grid>
                 </form>
+                {renderer}
+                {rendererProgress}
               </Grid>
             </Grid>
           </Container>
@@ -151,4 +192,23 @@ class ProfilePage extends Component {
   }
 }
 
+const mapStateToProps = ({ auth, card }) => {
+  return {
+    token: auth.user.token,
+    card: card.data,
+    errorMessage: card.error,
+    isLoading: card.isLoading,
+  }
+}
+const mapDispatchToProps = (dispatch) => {
+  return {
+    updateCard: (cardObj) => {
+      dispatch(updateCardRequest(cardObj))
+    },
+  }
+}
+const ProfilePage = connect(
+  mapStateToProps,
+  mapDispatchToProps
+)(ProfilePageComponent)
 export { ProfilePage }

@@ -3,6 +3,14 @@
   background-color: rgb(255, 255, 255);
   padding: 70px 50px;
   width: 100%;
+  position: relative;
+
+  &__progress {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+  }
 
   &__title {
     font-size: 36px;

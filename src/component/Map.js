@@ -11,10 +11,6 @@ import {
   getWaypointsFromMarker,
 } from '../helpers/mapHelpers'
 
-const mapbox = mapboxSdk({
-  accessToken: mapboxapikey,
-})
-
 const mapToken = mapboxapikey
 let markers = []
 
@@ -147,8 +143,15 @@ class MapEl extends React.Component {
 
   componentWillUnmount() {
     markers = []
-    this.map.removeLayer('route')
-    this.map.removeSource('route')
+
+    if (this.map.getLayer('route')) {
+      this.map.removeLayer('route')
+    }
+
+    if (this.map.getSource('route')) {
+      this.map.removeSource('route')
+    }
+
     this.map.remove()
   }
 

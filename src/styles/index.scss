@@ -72,3 +72,45 @@ body,
     opacity: 0.4;
   }
 }
+
+
+.alert-enter {
+  opacity: 0;
+  transform: translateX(-500px);
+}
+
+.alert-enter-active {
+  opacity: 1;
+  transform: translateX(0px);
+  transition: opacity 500ms, transform 500ms;
+}
+
+.page-auth {
+  width: 100%;
+}
+
+.page-auth-enter {
+  opacity: 0;
+  transform: scale(1.1);
+}
+
+.page-auth-enter-active {
+  opacity: 1;
+  transform: scale(1);
+  transition: opacity 500ms, transform 500ms;
+}
+
+.page-auth-exit {
+  position: absolute;
+  padding: 0 12px;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%,-50%) scale(1);
+  opacity: 1;
+}
+
+.page-auth-exit-active {
+  opacity: 0;
+  transform: translate(-50%,-50%) scale(0.9);
+  transition: opacity 500ms, transform 50000ms;
+}

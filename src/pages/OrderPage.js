@@ -3,8 +3,8 @@ import Header from '../elements/Header'
 import { Container } from '@material-ui/core'
 import OrderForm from '../component/OrderForm'
 import Map from '../component/Map'
-
 import '../styles/OrderPage.scss'
+
 const OrderPage = () => {
   const [futures, setFutures] = React.useState({})
 

@@ -1,29 +1,56 @@
 import { handleActions } from 'redux-actions'
-import { login, logout } from './ActionAuth'
-
+import { login, logout, loginError, loginRequest } from './ActionAuth'
+import { initApp } from '../mainActions'
 const initialState = {
-  isFetching: false,
   user: null,
+  isLoading: false,
   isLogged: false,
-  cardInformation: false,
   error: null,
 }
 
 const ReducerAuth = handleActions(
   {
-    [login]: (state, action) => {
-      console.log(state)
-      console.log(action)
-
+    [initApp]: (state) => {
       return {
-        user: action.payload,
-        isLogged: true,
+        ...state,
+        isLoading: false,
+        error: null,
       }
     },
-    [logout]: (state, action) => ({
-      user: null,
-      isLogged: false,
-    }),
+    [loginRequest]: () => {
+      return {
+        isLoading: true,
+        error: null,
+      }
+    },
+    [login]: (state, action) => {
+      console.log('login')
+
+      return {
+        user: {
+          ...action.payload,
+        },
+        isLogged: true,
+        isLoading: false,
+        error: null,
+      }
+    },
+    [logout]: (state, action) => {
+      return {
+        user: null,
+        isLogged: false,
+        isLoading: false,
+        error: null,
+      }
+    },
+    [loginError]: (state, action) => {
+      return {
+        user: null,
+        isLogged: false,
+        isLoading: false,
+        error: action.payload.message,
+      }
+    },
   },
   initialState
 )
