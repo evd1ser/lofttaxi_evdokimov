@@ -1,8 +1,6 @@
 import React, { Component } from 'react'
-import { Button, TextField } from '@material-ui/core'
-import mapboxgl from 'mapbox-gl'
+import { Button } from '@material-ui/core'
 import axios from 'axios'
-import mapboxSdk from '@mapbox/mapbox-sdk/umd/mapbox-sdk'
 import PropTypes from 'prop-types'
 import MapBoxInput from './MapBoxInput'
 
@@ -23,7 +21,7 @@ class OrderForm extends Component {
 
   render() {
     const { style, updateFutures, futures } = this.props
-    const { countOnRoad, addressTo, addressFrom } = this.state
+    const { countOnRoad } = this.state
 
     let arrayOnRoad = []
     arrayOnRoad.length = countOnRoad
@@ -43,28 +41,6 @@ class OrderForm extends Component {
             newPointOnMap={updateFutures}
             name="address_to"
           />
-
-          {/*
-          arrayOnRoad.map((item, index) => {
-            return (
-              <div key={index} className="order-form__item">
-                <div className="order-form__icon">
-                  <img src={require('../assets/icons/map_to.svg')} alt="" />
-                </div>
-                <div className="order-form__wrap">
-                  <input type="text" />
-                  <TextField
-                    className="order-form__input"
-                    label="Куда"
-                    type="text"
-                    name="addressTo[]"
-                    value={addressTo}
-                    onChange={this.handleInputChange}
-                  />
-                </div>
-              </div>
-            )
-          })*/}
         </form>
 
         <div className="order-page__form-footer">
@@ -80,6 +56,7 @@ class OrderForm extends Component {
 OrderForm.propTypes = {
   updateFutures: PropTypes.func,
   style: PropTypes.object,
+  futures: PropTypes.object,
 }
 
 OrderForm.defaultProps = {

@@ -2,7 +2,6 @@ import React from 'react'
 import { Logo } from 'loft-taxi-mui-theme'
 import { Button, Grid, Container } from '@material-ui/core'
 import LogOutBtn from './LogOutBtn'
-import PropTypes from 'prop-types'
 import { Link } from 'react-router-dom'
 import '../styles/Header.scss'
 
@@ -28,11 +27,5 @@ const Header = () => {
     </header>
   )
 }
-Header.propTypes = {
-  switchRoute: PropTypes.func,
-}
 
-Header.defaultProps = {
-  switchRoute: () => {},
-}
 export default Header

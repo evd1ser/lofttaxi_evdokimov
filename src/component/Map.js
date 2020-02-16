@@ -1,8 +1,9 @@
 import React from 'react'
-import mapboxgl, { LngLat, polyline } from 'mapbox-gl'
+import mapboxgl from 'mapbox-gl'
 import MapboxLanguage from '@mapbox/mapbox-gl-language'
 import { mapboxapikey } from '../settings'
-import mapboxSdk from '@mapbox/mapbox-sdk/umd/mapbox-sdk'
+import * as turf from '@turf/turf'
+
 import {
   getLocation,
   getAvailableFeaturesBy,
@@ -10,6 +11,7 @@ import {
   getDirectionGeometry,
   getWaypointsFromMarker,
 } from '../helpers/mapHelpers'
+import PropTypes from 'prop-types'
 
 const mapToken = mapboxapikey
 let markers = []
@@ -44,11 +46,6 @@ class MapEl extends React.Component {
   }
 
   addLayer = () => {
-    /*map.flyTo({
-      center: coordinates[0],
-      zoom: 15,
-    })*/
-
     this.map.addSource('route', {
       type: 'geojson',
       data: {
@@ -132,13 +129,44 @@ class MapEl extends React.Component {
     let waypoints = getWaypointsFromMarker(markers)
 
     getDirectionGeometry(waypoints).then((geometry) => {
+      this.animateWay(geometry)
+    })
+  }
+
+  animateWay = (geometry) => {
+    if (!geometry.coordinates.length) return
+
+    let currentGeometry = {
+      coordinates: [],
+      type: 'LineString',
+    }
+
+    var line = turf.lineString(geometry.coordinates)
+    var lineDistance = turf.lineDistance(line)
+
+    var arc = []
+    var steps = 100
+
+    for (var i = 0; i < lineDistance; i += lineDistance / steps) {
+      var segment = turf.along(line, i)
+      arc.push(segment.geometry.coordinates)
+    }
+
+    const draw = () => {
       const routeSource = this.map.getSource('route')
+      currentGeometry.coordinates.push(arc.shift())
 
       routeSource.setData({
         type: 'Feature',
-        geometry,
+        geometry: currentGeometry,
       })
-    })
+
+      if (arc.length) {
+        requestAnimationFrame(draw)
+      }
+    }
+
+    draw()
   }
 
   componentWillUnmount() {
@@ -170,6 +198,11 @@ class MapEl extends React.Component {
       </>
     )
   }
+}
+
+MapEl.propTypes = {
+  futures: PropTypes.object,
+  updateFutures: PropTypes.func.isRequired,
 }
 
 export default MapEl

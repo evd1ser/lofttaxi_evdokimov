@@ -13,14 +13,14 @@ export function getLocation(cb) {
   }
 }
 
-export const getAvailableFeaturesBy = (query) => {
+export const getAvailableFeaturesBy = (query, limit = 0) => {
   if (!query.length) {
-    return
+    return Promise.reject()
   }
   return mapbox.geocoding
     .forwardGeocode({
       query,
-      limit: 2,
+      limit,
     })
     .send()
     .then((response) => {

@@ -2,6 +2,9 @@ import React from 'react'
 import { TextField } from '@material-ui/core'
 import useFocus from '../hooks/useFocus'
 import { getAvailableFeaturesBy } from '../helpers/mapHelpers'
+import { TweenMax } from 'gsap/all'
+import { Transition } from 'react-transition-group'
+import PropTypes from 'prop-types'
 
 const MapBoxInput = ({
   label = 'Откуда',
@@ -10,12 +13,14 @@ const MapBoxInput = ({
   future,
 }) => {
   const [value, setValue] = React.useState('')
+  const [showPlate, setShowPlate] = React.useState(false)
   const [features, setFeatures] = React.useState([])
   const [focusRef, isFocus] = useFocus()
 
   const onChangeInputHandler = ({ target: { value } }) => {
-    getAvailableFeaturesBy(value).then((features) => {
+    getAvailableFeaturesBy(value, 2).then((features) => {
       setFeatures(features)
+      setShowPlate(true)
     })
 
     setValue(value)
@@ -29,8 +34,8 @@ const MapBoxInput = ({
   const handleSelectOfFeature = (e, feature) => {
     e.preventDefault()
     setValue(feature.text) // устанавливаем название из геолокации
-    setFeatures([]) // очищаем список найденых мест
     newPointOnMap(feature, name) // передаем наверх что выбрано это место
+    setShowPlate(false)
   }
 
   const renderFeature = (feature) => {
@@ -68,14 +73,40 @@ const MapBoxInput = ({
           value={value}
           onChange={onChangeInputHandler}
         />
-        {features && (
+        <Transition
+          timeout={600}
+          mountOnEnter
+          unmountOnExit
+          in={showPlate}
+          onExited={() => {
+            setFeatures([]) // очищаем список найденых мест
+          }}
+          addEndListener={(node, done) => {
+            TweenMax.set(node, {
+              y: showPlate ? 100 : 0,
+            })
+
+            TweenMax.to(node, 0.3, {
+              y: showPlate ? 0 : 100,
+              autoAlpha: showPlate ? 1 : 0,
+              onComplete: done,
+            })
+          }}
+        >
           <div className="order-form__dropdown">
             {features.map(renderFeature)}
           </div>
-        )}
+        </Transition>
       </div>
     </div>
   )
+}
+
+MapBoxInput.propTypes = {
+  label: PropTypes.string,
+  name: PropTypes.string,
+  newPointOnMap: PropTypes.func.isRequired,
+  future: PropTypes.object,
 }
 
 export default MapBoxInput

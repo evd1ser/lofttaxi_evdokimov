@@ -1,4 +1,4 @@
-import { all, call, put, takeLatest } from 'redux-saga/effects'
+import { all, call, put, select, takeLatest } from 'redux-saga/effects'
 import {
   loadCard,
   updateCardData,
@@ -16,22 +16,35 @@ function* fetchLoadCard(action) {
         yield put(updateCardData(cardData))
       }
     }
-  } catch (error) {}
+  } catch (error) {
+    // todo если неудалась загрузка карты ничего страшного
+  }
 }
 
 function* fetchCardUpdate(action) {
   try {
     if (action.payload) {
-      const cardResult = yield call(saveCardInformation, action.payload)
+      const {
+        auth: {
+          user: { token },
+        },
+      } = yield select()
 
-      if (cardResult.success) {
+      const cardResult = yield call(saveCardInformation, {
+        ...action.payload,
+        token,
+      })
+
+      if (cardResult.success === true) {
         yield put(updateCardData(action.payload))
       } else {
         const { error } = cardResult
         yield put(updateCardError(error))
       }
     }
-  } catch (error) {}
+  } catch (error) {
+    yield put(updateCardError(error))
+  }
 }
 
 function* watchCardRequest() {

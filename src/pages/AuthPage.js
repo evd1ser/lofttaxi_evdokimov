@@ -3,17 +3,18 @@ import AuthForm from '../component/AuthForm'
 import RegistrationForm from '../component/RegistrationForm'
 import { Container, Grid } from '@material-ui/core'
 import { Logo } from 'loft-taxi-mui-theme'
-import { Route, Switch } from 'react-router-dom'
+import { Route } from 'react-router-dom'
 import { CSSTransition } from 'react-transition-group'
 
 import '../styles/AuthPage.scss'
+import PropTypes from 'prop-types'
 
 const AuthPage = ({ match }) => {
   const [showMessage, setShowMessage] = useState(false)
 
   useEffect(() => {
     setShowMessage(true)
-  })
+  }, [])
 
   return (
     <div className="a-page">
@@ -72,6 +73,10 @@ const AuthPage = ({ match }) => {
       </Container>
     </div>
   )
+}
+
+AuthPage.propTypes = {
+  match: PropTypes.object,
 }
 
 export { AuthPage }

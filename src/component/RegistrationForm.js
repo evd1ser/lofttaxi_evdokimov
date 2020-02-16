@@ -3,6 +3,7 @@ import { Button, Grid, TextField, LinearProgress } from '@material-ui/core'
 import { Link } from 'react-router-dom'
 import { registrationRequest } from '../store/Registration/ActionRegistration'
 import { connect } from 'react-redux'
+import PropTypes from 'prop-types'
 
 class RegistrationForm extends Component {
   state = {
@@ -130,6 +131,12 @@ const mapDispatchToProps = (dispatch) => {
       dispatch(registrationRequest(userObj))
     },
   }
+}
+
+RegistrationForm.propTypes = {
+  errorMessage: PropTypes.string,
+  isLoading: PropTypes.bool,
+  registration: PropTypes.func,
 }
 
 export default connect(mapStateToProps, mapDispatchToProps)(RegistrationForm)

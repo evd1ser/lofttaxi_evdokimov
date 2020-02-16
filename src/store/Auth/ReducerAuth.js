@@ -23,9 +23,7 @@ const ReducerAuth = handleActions(
         error: null,
       }
     },
-    [login]: (state, action) => {
-      console.log('login')
-
+    [login]: (_state, action) => {
       return {
         user: {
           ...action.payload,
@@ -35,7 +33,7 @@ const ReducerAuth = handleActions(
         error: null,
       }
     },
-    [logout]: (state, action) => {
+    [logout]: () => {
       return {
         user: null,
         isLogged: false,
@@ -43,7 +41,7 @@ const ReducerAuth = handleActions(
         error: null,
       }
     },
-    [loginError]: (state, action) => {
+    [loginError]: (_state, action) => {
       return {
         user: null,
         isLogged: false,

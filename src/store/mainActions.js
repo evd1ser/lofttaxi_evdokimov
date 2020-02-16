@@ -1,3 +1,3 @@
 import { createAction } from 'redux-actions'
 
-export const initApp = createAction('INIT_APP', () => {})
+export const initApp = createAction('INIT_APP')
