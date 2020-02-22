@@ -10,7 +10,6 @@ class OrderForm extends Component {
   state = {
     addressFrom: '',
     addressTo: '',
-    countOnRoad: 1,
     availableFrom: [],
     features: [],
   }
@@ -21,15 +20,14 @@ class OrderForm extends Component {
 
   render() {
     const { style, updateFutures, futures } = this.props
-    const { countOnRoad } = this.state
-
-    let arrayOnRoad = []
-    arrayOnRoad.length = countOnRoad
-    arrayOnRoad.fill(countOnRoad)
 
     return (
       <div className="order-page__form" style={style}>
-        <form className="order-form" onSubmit={this.handleSubmit}>
+        <form
+          className="order-form"
+          onSubmit={this.handleSubmit}
+          data-testid="form"
+        >
           <MapBoxInput
             future={futures['address_from']}
             newPointOnMap={updateFutures}

@@ -1,5 +1,6 @@
 import { mapboxapikey } from '../settings'
 import mapboxSdk from '@mapbox/mapbox-sdk/umd/mapbox-sdk'
+import * as turf from '@turf/turf'
 
 const mapbox = mapboxSdk({
   accessToken: mapboxapikey,
@@ -91,4 +92,40 @@ export const getWaypointsFromMarker = (markers) => {
   }
 
   return waypoints
+}
+
+export const animateWay = (map, geometry) => {
+  if (!geometry.coordinates.length) return
+
+  let currentGeometry = {
+    coordinates: [],
+    type: 'LineString',
+  }
+
+  var line = turf.lineString(geometry.coordinates)
+  var lineDistance = turf.lineDistance(line)
+
+  var arc = []
+  var steps = 100
+
+  for (var i = 0; i < lineDistance; i += lineDistance / steps) {
+    var segment = turf.along(line, i)
+    arc.push(segment.geometry.coordinates)
+  }
+
+  const draw = () => {
+    const routeSource = map.getSource('route')
+    currentGeometry.coordinates.push(arc.shift())
+
+    routeSource.setData({
+      type: 'Feature',
+      geometry: currentGeometry,
+    })
+
+    if (arc.length) {
+      requestAnimationFrame(draw)
+    }
+  }
+
+  draw()
 }

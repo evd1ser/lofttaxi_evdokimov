@@ -10,6 +10,7 @@ import {
   generateMapElement,
   getDirectionGeometry,
   getWaypointsFromMarker,
+  animateWay,
 } from '../helpers/mapHelpers'
 import PropTypes from 'prop-types'
 
@@ -134,39 +135,7 @@ class MapEl extends React.Component {
   }
 
   animateWay = (geometry) => {
-    if (!geometry.coordinates.length) return
-
-    let currentGeometry = {
-      coordinates: [],
-      type: 'LineString',
-    }
-
-    var line = turf.lineString(geometry.coordinates)
-    var lineDistance = turf.lineDistance(line)
-
-    var arc = []
-    var steps = 100
-
-    for (var i = 0; i < lineDistance; i += lineDistance / steps) {
-      var segment = turf.along(line, i)
-      arc.push(segment.geometry.coordinates)
-    }
-
-    const draw = () => {
-      const routeSource = this.map.getSource('route')
-      currentGeometry.coordinates.push(arc.shift())
-
-      routeSource.setData({
-        type: 'Feature',
-        geometry: currentGeometry,
-      })
-
-      if (arc.length) {
-        requestAnimationFrame(draw)
-      }
-    }
-
-    draw()
+    animateWay(this.map, geometry)
   }
 
   componentWillUnmount() {

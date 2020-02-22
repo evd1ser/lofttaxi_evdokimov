@@ -1,78 +1,130 @@
 import React from 'react'
+
 import { render, fireEvent } from '@testing-library/react'
 import RegistrationForm from '../component/RegistrationForm'
-import { AuthContextProvider } from '../context/AuthContext'
+import { store } from '../store/store'
+import { createStore } from 'redux'
+import { Provider } from 'react-redux'
+import { StaticRouter } from 'react-router-dom'
+import reducer from '../store/reducers.js'
+
+jest.mock('gsap/all', () => ({
+  TweenMax: {
+    to: () => {},
+    set: () => {},
+  },
+}))
+
+function renderWithRedux(
+  ui,
+  { initialState, store = createStore(reducer, initialState) } = {}
+) {
+  return {
+    ...render(<Provider store={store}>{ui}</Provider>),
+    // adding `store` to the returned utilities to allow us
+    // to reference it in our tests (just try to avoid using
+    // this to test implementation details).
+    store,
+  }
+}
 
 describe('RegistrationForm', () => {
-  const adminEmail = 'test@admin.com'
-
-  let onChangeRoute = () => {}
-  let onChange = () => {}
-  let name = ''
-
-  beforeEach(() => {
-    name = ''
-    onChangeRoute = jest.fn((newName) => {
-      name = newName
-    })
-    onChange = jest.fn()
-  })
-
-  describe('login', () => {
-    it('correct', () => {
-      const { container } = render(
-        <AuthContextProvider>
-          <RegistrationForm onChangeRoute={onChangeRoute} onChange={onChange} />
-        </AuthContextProvider>
-      )
-      const inputEmail = container.querySelector('[name=email]')
-      const inputPassword = container.querySelector('[name=password]')
-      const inputName = container.querySelector('[name=name]')
-      const inputSurname = container.querySelector('[name=surname]')
-      const form = container.querySelector('form')
-
-      expect(inputEmail.value).toEqual('')
-      expect(inputPassword.value).toEqual('')
-      expect(inputName.value).toEqual('')
-      expect(inputSurname.value).toEqual('')
-
-      fireEvent.change(inputEmail, { target: { value: adminEmail } })
-      fireEvent.change(inputPassword, { target: { value: 'password' } })
-      fireEvent.change(inputName, { target: { value: 'Name' } })
-      fireEvent.change(inputSurname, { target: { value: 'Surname' } })
-
-      fireEvent.submit(form)
-
-      expect(onChangeRoute.mock.calls.length).toBe(1)
-    })
-  })
-
-  it('change form', () => {
-    const { getByText } = render(
-      <AuthContextProvider>
-        <RegistrationForm onChangeRoute={onChangeRoute} onChange={onChange} />
-      </AuthContextProvider>
-    )
-
-    fireEvent.click(getByText(/Войти/i))
-
-    expect(onChange.mock.calls.length).toBe(1)
-  })
-
-  it('render without params', () => {
-    const { getByText } = render(
-      <AuthContextProvider>
+  test('can render with redux with defaults', () => {
+    const { getByTestId, getByText } = renderWithRedux(
+      <StaticRouter>
         <RegistrationForm />
-      </AuthContextProvider>
+      </StaticRouter>
+    )
+    // fireEvent.click(getByText('+'))
+    // expect(getByTestId('count-value')).toHaveTextContent('1')
+  })
+  test('can render with redux with initial state', () => {
+    const { getByTestId, getByText } = renderWithRedux(
+      <StaticRouter>
+        <RegistrationForm />
+      </StaticRouter>,
+      {
+        initialState: {
+          registration: {
+            isLoading: true,
+          },
+        },
+      }
+    )
+  })
+  test('can render with redux with initial error', () => {
+    const errorMessage = 'ужасная ошибка'
+
+    const { getByText } = renderWithRedux(
+      <StaticRouter>
+        <RegistrationForm />
+      </StaticRouter>,
+      {
+        initialState: {
+          registration: {
+            isLoading: true,
+            error: errorMessage,
+          },
+        },
+      }
     )
 
-    fireEvent.click(getByText(/Войти/i))
-    fireEvent.click(getByText(/Зарегистрироваться/i))
+    expect(getByText(errorMessage)).toBeTruthy()
   })
-  it('render without params', () => {
-    const { getByText } = render(<RegistrationForm />)
+  test('can registrate', () => {
+    const { getByTestId, getByText } = renderWithRedux(
+      <StaticRouter>
+        <RegistrationForm />
+      </StaticRouter>,
+      {
+        initialState: {
+          registration: {
+            isLoading: false,
+          },
+        },
+      }
+    )
+    fireEvent.change(getByTestId('email'), {
+      target: { value: 'demo@test.app' },
+    })
+    fireEvent.change(getByTestId('name'), {
+      target: { value: 'Имя пользователя' },
+    })
+    fireEvent.change(getByTestId('surname'), {
+      target: { value: 'Фамилия пользователя' },
+    })
+    fireEvent.change(getByTestId('password'), { target: { value: 'password' } })
 
-    fireEvent.click(getByText(/Войти/i))
-    fireEvent.click(getByText(/Зарегистрироваться/i))
+    fireEvent.submit(getByTestId('form'))
+
+    // expect(getByTestId('count-value')).toHaveTextContent('1')
+  })
+  test('can registrate isLoading', () => {
+    const { getByTestId, getByText } = renderWithRedux(
+      <StaticRouter>
+        <RegistrationForm />
+      </StaticRouter>,
+      {
+        initialState: {
+          registration: {
+            isLoading: true,
+          },
+        },
+      }
+    )
+    fireEvent.change(getByTestId('email'), {
+      target: { value: 'demo@test.app' },
+    })
+    fireEvent.change(getByTestId('name'), {
+      target: { value: 'Имя пользователя' },
+    })
+    fireEvent.change(getByTestId('surname'), {
+      target: { value: 'Фамилия пользователя' },
+    })
+    fireEvent.change(getByTestId('password'), { target: { value: 'password' } })
+
+    fireEvent.submit(getByTestId('form'))
+
+    // expect(getByTestId('count-value')).toHaveTextContent('1')
   })
 })

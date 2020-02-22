@@ -1,113 +1,54 @@
 import React from 'react'
+
 import { render, fireEvent } from '@testing-library/react'
 import AuthForm from '../component/AuthForm'
-import { AuthContextProvider } from '../context/AuthContext'
+import { store } from '../store/store'
+import { createStore } from 'redux'
+import { Provider } from 'react-redux'
+import { StaticRouter } from 'react-router-dom'
+import reducer from '../store/reducers.js'
+
+jest.mock('gsap/all', () => ({
+  TweenMax: {
+    to: () => {},
+    set: () => {},
+  },
+}))
+
+function renderWithRedux(
+  ui,
+  { initialState, store = createStore(reducer, initialState) } = {}
+) {
+  return {
+    ...render(<Provider store={store}>{ui}</Provider>),
+    // adding `store` to the returned utilities to allow us
+    // to reference it in our tests (just try to avoid using
+    // this to test implementation details).
+    store,
+  }
+}
 
 describe('AuthForm', () => {
-  const adminEmail = 'test@admin.com'
-
-  let onChangeRoute = () => {}
-  let onChange = () => {}
-  let name = ''
-
-  beforeEach(() => {
-    name = ''
-    onChangeRoute = jest.fn((newName) => {
-      name = newName
+  test('can render with redux with defaults', () => {
+    const { getByTestId, getByText } = renderWithRedux(
+      <StaticRouter>
+        <AuthForm />
+      </StaticRouter>
+    )
+    // fireEvent.click(getByText('+'))
+    // expect(getByTestId('count-value')).toHaveTextContent('1')
+  })
+  test('success login', () => {
+    const { getByTestId, getByText } = renderWithRedux(
+      <StaticRouter>
+        <AuthForm />
+      </StaticRouter>
+    )
+    /*fireEvent.change(getByTestId('email'), {
+      target: { value: 'demo@test.app' },
     })
-    onChange = jest.fn()
-  })
-
-  describe('login', () => {
-    it('correct', () => {
-      const { container } = render(
-        <AuthContextProvider>
-          <AuthForm onChangeRoute={onChangeRoute} />
-        </AuthContextProvider>
-      )
-
-      const inputName = container.querySelector('#username')
-      const inputPassword = container.querySelector('#password')
-      const form = container.querySelector('form')
-      // const inputPassword = container.querySelector('#password')
-      // expect(inputPassword.value).toEqual('')
-      fireEvent.change(inputName, { target: { value: adminEmail } })
-      fireEvent.change(inputPassword, { target: { value: 'password' } })
-      fireEvent.submit(form)
-
-      expect(onChangeRoute.mock.calls.length).toBe(1)
-    })
-
-    it('incorrect', () => {
-      const { container } = render(
-        <AuthContextProvider>
-          <AuthForm onChangeRoute={onChangeRoute} />
-        </AuthContextProvider>
-      )
-
-      const inputName = container.querySelector('#username')
-      const inputPassword = container.querySelector('#password')
-      const form = container.querySelector('form')
-      // const inputPassword = container.querySelector('#password')
-      // expect(inputPassword.value).toEqual('')
-      fireEvent.change(inputName, { target: { value: adminEmail } })
-      fireEvent.change(inputPassword, { target: { value: 'password123' } })
-      fireEvent.submit(form)
-
-      expect(onChangeRoute.mock.calls.length).toBe(0)
-    })
-  })
-
-  it('change form ', () => {
-    const { getByText } = render(
-      <AuthContextProvider>
-        <AuthForm onChangeRoute={onChangeRoute} onChange={onChange} />
-      </AuthContextProvider>
-    )
-
-    fireEvent.click(getByText(/Зарегистрируйтесь/i))
-
-    expect(onChange.mock.calls.length).toBe(1)
-  })
-
-  /*it('have two input', () => {
-    const wrapper = shallow(
-      <AuthContextProvider>
-        <AuthForm onChangeRoute={onChangeRoute} />
-      </AuthContextProvider>
-    )
-
-    expect(wrapper.find('input').at(1))
-  })*/
-
-  it('correct login typing', () => {
-    const { container } = render(
-      <AuthContextProvider>
-        <AuthForm onChangeRoute={onChangeRoute} />
-      </AuthContextProvider>
-    )
-    const inputName = container.querySelector('#username')
-
-    expect(inputName.value).toEqual('')
-
-    fireEvent.change(inputName, { target: { value: adminEmail } })
-
-    expect(inputName.value).toBe(adminEmail)
-  })
-
-  it('correct password typing', () => {
-    const { container } = render(
-      <AuthContextProvider>
-        <AuthForm onChangeRoute={onChangeRoute} />
-      </AuthContextProvider>
-    )
-    const inputPassword = container.querySelector('#password')
-    const password = 'password'
-
-    expect(inputPassword.value).toEqual('')
-
-    fireEvent.change(inputPassword, { target: { value: password } })
-
-    expect(inputPassword.value).toBe(password)
+    fireEvent.change(getByTestId('password'), { target: { value: 'password' } })
+*/
+    fireEvent.submit(getByTestId('form'))
   })
 })

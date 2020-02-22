@@ -13,7 +13,6 @@ import { Field, reduxForm, change } from 'redux-form'
 import RenderTextField from './RenderTextField'
 import RenderInputField from './RenderInputField'
 import { maskJs } from 'mask-js'
-import { connect } from 'react-redux'
 
 let CreditCardForm = ({ dispatch, handleSubmit, initialValues }) => {
   const formatInputMask = (mask) => {
@@ -47,6 +46,7 @@ let CreditCardForm = ({ dispatch, handleSubmit, initialValues }) => {
                     <InputAdornment position="end">
                       <IconButton
                         aria-label="toggle password visibility"
+                        data-testid="icon-btn"
                         onClick={() => {
                           dispatch(change('credit-card-form', 'cardNumber', ''))
                         }}

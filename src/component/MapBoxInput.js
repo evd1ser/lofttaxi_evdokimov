@@ -71,6 +71,10 @@ const MapBoxInput = ({
           type="text"
           name={name}
           value={value}
+          placeholder="адрес"
+          inputProps={{
+            className: 'js-input-test',
+          }}
           onChange={onChangeInputHandler}
         />
         <Transition

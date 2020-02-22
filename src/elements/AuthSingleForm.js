@@ -8,9 +8,14 @@ let AuthSingleForm = ({
   isLoading,
   renderer,
   rendererProgress,
+  ...rest
 }) => {
   return (
-    <form className="auth-form__real" onSubmit={handleSubmit}>
+    <form
+      className="auth-form__real"
+      onSubmit={handleSubmit}
+      data-testid={rest['data-testid']}
+    >
       <div className="auth-form__row">
         <Field
           component={RenderTextField}
@@ -18,6 +23,7 @@ let AuthSingleForm = ({
           label="Имя пользователя*"
           type="text"
           name="username"
+          data-testid="email"
         />
       </div>
       <div className="auth-form__row">
@@ -27,6 +33,7 @@ let AuthSingleForm = ({
           label="Пароль*"
           type="password"
           name="password"
+          data-testid="password"
         />
       </div>
 

@@ -37,6 +37,7 @@ class AuthForm extends Component {
         </p>
 
         <AuthSingleForm
+          data-testid="form"
           onSubmit={this.handleSubmit}
           renderer={renderer}
           isLoading={isLoading}

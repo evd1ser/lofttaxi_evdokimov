@@ -52,7 +52,11 @@ class RegistrationForm extends Component {
             Войти
           </Link>
         </p>
-        <form className="auth-form__real" onSubmit={this.handleSubmit}>
+        <form
+          className="auth-form__real"
+          onSubmit={this.handleSubmit}
+          data-testid="form"
+        >
           <div className="auth-form__row">
             <TextField
               className="auth-form__input"
@@ -61,6 +65,9 @@ class RegistrationForm extends Component {
               type="text"
               value={email}
               onChange={this.handleInputChange}
+              inputProps={{
+                'data-testid': 'email',
+              }}
             />
           </div>
           <div className="auth-form__row">
@@ -73,6 +80,9 @@ class RegistrationForm extends Component {
                   type="text"
                   value={name}
                   onChange={this.handleInputChange}
+                  inputProps={{
+                    'data-testid': 'name',
+                  }}
                 />
               </Grid>
               <Grid item xs={12} md={6}>
@@ -83,6 +93,9 @@ class RegistrationForm extends Component {
                   type="text"
                   value={surname}
                   onChange={this.handleInputChange}
+                  inputProps={{
+                    'data-testid': 'surname',
+                  }}
                 />
               </Grid>
             </Grid>
@@ -95,6 +108,9 @@ class RegistrationForm extends Component {
               type="password"
               value={password}
               onChange={this.handleInputChange}
+              inputProps={{
+                'data-testid': 'password',
+              }}
             />
           </div>
           <div className="auth-form__row">
