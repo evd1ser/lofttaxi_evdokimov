@@ -11,7 +11,7 @@
     "@testing-library/react": "^9.3.2",
     "@testing-library/user-event": "^7.1.2",
     "@turf/turf": "^5.1.6",
-    "axios": "^0.19.1",
+    "axios": "^0.21.1",
     "babel-core": "^6.26.3",
     "babel-loader": "^8.0.6",
     "babel-preset-react": "^6.24.1",
