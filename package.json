@@ -22,7 +22,7 @@
     "loft-taxi-mui-theme": "^1.0.1",
     "mapbox-gl": "^1.6.1",
     "mask-js": "^2.1.0",
-    "node-sass": "^4.13.0",
+    "node-sass": "^7.0.0",
     "normalize.css": "^8.0.1",
     "prettier": "^1.19.1",
     "prop-types": "^15.7.2",
